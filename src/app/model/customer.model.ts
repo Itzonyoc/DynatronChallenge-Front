@@ -5,6 +5,7 @@ export class CustomerModel {
   email: string;
   created: string;
   last_updated: string;
+  selected: boolean
 
   constructor(
     id: number,
@@ -20,5 +21,6 @@ export class CustomerModel {
     this.email = email;
     this.created = created;
     this.last_updated = last_updated;
+    this.selected = false;
   }
 }

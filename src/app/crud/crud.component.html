@@ -19,7 +19,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let item of _crud.customers">
+          <tr *ngFor="let item of _crud.customers" (click)="select(item)" [ngClass]="{'table-info' : item.selected}">
             <td>{{ item.id }}</td>
             <td>{{ item.first_name }}</td>
             <td>{{ item.last_name }}</td>

@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import * as bootstrap from 'bootstrap';
 import { CRUDService } from 'src/service/crud.service';
 import { CustomerModel } from '../model/customer.model';
+import * as bootstrap from 'bootstrap';
+import Swal from 'sweetalert2'
 
 @Component({
   selector: 'app-crud',
@@ -19,6 +20,12 @@ export class CRUDComponent implements OnInit {
   ngOnInit() {
     this._crud.getData()
       .then(() => {
+        if (localStorage['selected']) {
+          if (this._crud.customers.find(t => t.id === Number(localStorage['selected']))) {
+            let item = this._crud.customers.find(t => t.id === Number(localStorage['selected']));
+            item!.selected = true;
+          }
+        }
       });
   }
 
@@ -29,6 +36,15 @@ export class CRUDComponent implements OnInit {
         .then((result) => {
           this._crud.getData()
             .then(() => {
+              Swal.fire({
+                title: 'Successful',
+                icon: 'success',
+                timer: 1000,
+                timerProgressBar: true,
+                didOpen: () => {
+                  Swal.showLoading()
+                },
+              })
             });
         });
     } else {
@@ -36,18 +52,54 @@ export class CRUDComponent implements OnInit {
         .then((result) => {
           this._crud.getData()
             .then(() => {
+              Swal.fire({
+                title: 'Successful',
+                icon: 'success',
+                timer: 1000,
+                timerProgressBar: true,
+                didOpen: () => {
+                  Swal.showLoading()
+                },
+              })
             });
         });
     }
   }
 
   delete(item: CustomerModel) {
-    this._crud.deleteData(item.id)
-      .then((result) => {
-        this._crud.getData()
-          .then(() => {
+    Swal.fire({
+      title: 'Delete Customer',
+      text: 'Are you sure you want to delete this item?',
+      showCancelButton: true,
+      confirmButtonText: 'Yes',
+      cancelButtonText: 'No'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this._crud.deleteData(item.id)
+          .then((result) => {
+            this._crud.getData()
+              .then(() => {
+                Swal.fire({
+                  title: 'Successful',
+                  icon: 'success',
+                  timer: 1000,
+                  timerProgressBar: true,
+                  didOpen: () => {
+                    Swal.showLoading()
+                  },
+                })
+              });
           });
-      });
+      }
+    });
+  }
+
+  select(item: CustomerModel) {
+    this._crud.customers.forEach(element => {
+      element.selected = false;
+    });
+    localStorage['selected'] = item.id;
+    item.selected = true;
   }
 
   open(modal: string, item?: CustomerModel) {
