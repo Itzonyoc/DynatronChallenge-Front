@@ -7,19 +7,19 @@ import { CustomerModel } from 'src/app/model/customer.model';
   providedIn: 'root',
 })
 export class CRUDService {
-  private baseUrl: string = 'crud';
+  private baseUrl: string = 'customer';
 
-  customer: CustomerModel = new CustomerModel(0, '', '', '', '', '');
+  customer: CustomerModel = new CustomerModel(0, '', '', '', '1900-01-01', '1900-01-01');
   customers: CustomerModel[] = [];
 
-  constructor(private api: ApiService) {}
+  constructor(private api: ApiService) { }
 
   getData() {
     let promise = new Promise((resolve, reject) => {
       this.api.get<SearchResult>(`${this.baseUrl}/`).subscribe((res: any) => {
-        if (res && res.data) {
+        if (res) {
           this.customers = [];
-          this.customers = res.data.map((element: any) => {
+          this.customers = res.map((element: any) => {
             return new CustomerModel(
               element.id,
               element.first_name,
@@ -42,9 +42,9 @@ export class CRUDService {
   postData() {
     let promise = new Promise((resolve, reject) => {
       this.api
-        .post(`${this.baseUrl}/postCustomer`, this.customer)
+        .post(`${this.baseUrl}`, this.customer)
         .subscribe((res: any) => {
-          if (res && res.data) {
+          if (res) {
             resolve(1);
           } else {
             resolve(0);
@@ -57,7 +57,7 @@ export class CRUDService {
   putData() {
     let promise = new Promise((resolve, reject) => {
       this.api
-        .put(`${this.baseUrl}/putCustomer`, this.customer)
+        .put(`${this.baseUrl}`, this.customer)
         .subscribe((res: any) => {
           if (res && res.data) {
             resolve(1);
@@ -69,10 +69,10 @@ export class CRUDService {
     return promise;
   }
 
-  deleteData() {
+  deleteData(id: number) {
     let promise = new Promise((resolve, reject) => {
       this.api
-        .put(`${this.baseUrl}/deletetCustomer`, this.customer)
+        .delete(`${this.baseUrl}?id=${id}`)
         .subscribe((res: any) => {
           if (res && res.data) {
             resolve(1);

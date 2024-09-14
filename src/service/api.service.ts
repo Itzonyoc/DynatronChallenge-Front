@@ -11,7 +11,7 @@ export class ApiService {
     private headers: HttpHeaders;
 
     constructor(private httpClient: HttpClient) {
-        this.baseRoute = 'https://localhost:7041/api/';
+        this.baseRoute = 'https://localhost:7283/';
         this.headers = new HttpHeaders();
     }
 
